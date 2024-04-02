@@ -7,7 +7,7 @@ class Pers(games.Sprite):
     pers_image = games.load_image("pers.png")
     keys = pygame.key.get_pressed()
     is_jump = False
-    jump_count = 10
+    jump_count = 30
     def __init__(self):
         super().__init__(image=Pers.pers_image,
                          angle=0,
@@ -31,15 +31,15 @@ class Pers(games.Sprite):
                 if games.keyboard.is_pressed(games.K_SPACE):
                     Pers.is_jump = True
             else:
-                if Pers.jump_count >= -10:
+                if Pers.jump_count >= -30:
                     if Pers.jump_count > 0:
-                        self.y -= (Pers.jump_count ** 2) / 2
+                        self.y -= (Pers.jump_count) / 2
                     else:
-                        self.y += (Pers.jump_count ** 2) / 2
+                        self.y += (Pers.jump_count*-1) / 2
                     Pers.jump_count -= 1
                 else:
                     Pers.is_jump = False
-                    Pers.jump_count = 10
+                    Pers.jump_count = 30
         if self.attack_reload > 0:
             self.attack_reload -= 1
         if games.keyboard.is_pressed(games.K_f):
@@ -58,32 +58,34 @@ class Pers(games.Sprite):
 class Enemies(games.Sprite):
     enemy_image = games.load_image("enemy.png")
     is_jump = False
-    jump_count = 10
-    jump_time = 200
+    jump_count = 30
+    jump_time = 0
     def __init__(self):
         super().__init__(image=Enemies.enemy_image,
                          angle=0,
                          x=1300,
                          y=570)
     def update(self):
-        self.x -= 5
+        self.x -= 2
         if Enemies.jump_time > 0:
             Enemies.jump_time -= 1
 
         if not Enemies.is_jump:
-            if Enemies.jump_time == 0:
+            if Enemies.jump_time == 0 and random.randint(1,200) == 1:
                 Enemies.is_jump = True
         else:
-            if Enemies.jump_count >= -10:
+            if Enemies.jump_count >= -30:
                 if Enemies.jump_count > 0:
-                    self.y -= (Enemies.jump_count ** 2) / 2
+                    self.y -= (Enemies.jump_count) / 2
                 else:
-                    self.y += (Enemies.jump_count ** 2) / 2
+                    self.y += (Enemies.jump_count*-1) / 2
                 Enemies.jump_count -= 1
             else:
                 Enemies.is_jump = False
-                Enemies.jump_count = 10
-                Enemies.jump_time = 100
+                Enemies.jump_count = 30
+                Enemies.jump_time = 300
+    def enemy_collide(self):
+        self.destroy()
 
 class Attack(games.Sprite):
     fireball_image = games.load_image("pngwing.com.png")
@@ -91,6 +93,10 @@ class Attack(games.Sprite):
         self.x += 10
         if self.x < 0:
             self.destroy()
+        self.check_collide()
+    def check_collide(self):
+        for Enemies in self.overlapping_sprites:
+            Enemies.enemy_collide()
 class Enemy_attack(games.Sprite):
     fireball_image = games.load_image("pngwing.com.png")
     def update(self):
