@@ -46,7 +46,7 @@ class Pers(games.Sprite):
             if self.attack_reload == 0:
                 new_fireball = Attack(Attack.fireball_image, 0, self.x+100, self.y)
                 games.screen.add(new_fireball)
-                self.attack_reload = 100
+                self.attack_reload = 50
         self.check_enemy()
     def check_enemy(self):
         if self.spawn_time > 0:
