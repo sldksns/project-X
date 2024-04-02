@@ -1,6 +1,7 @@
 from superwires import games
 import random
 import pygame
+
 games.init(1280,748,80)
 
 class Pers(games.Sprite):
