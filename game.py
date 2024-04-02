@@ -14,6 +14,7 @@ class Pers(games.Sprite):
                          x=640,
                          y=570)
         self.spawn_time = 0
+        self.attack_reload = 0
         self.hitpoints = 100
     def update(self):
         if games.keyboard.is_pressed(games.K_d):
@@ -39,11 +40,14 @@ class Pers(games.Sprite):
                 else:
                     Pers.is_jump = False
                     Pers.jump_count = 10
+        if self.attack_reload > 0:
+            self.attack_reload -= 1
         if games.keyboard.is_pressed(games.K_f):
-            new_fireball = Attack(Attack.fireball_image, 0, self.x+100, self.y)
-            games.screen.add(new_fireball)
+            if self.attack_reload == 0:
+                new_fireball = Attack(Attack.fireball_image, 0, self.x+100, self.y)
+                games.screen.add(new_fireball)
+                self.attack_reload = 100
         self.check_enemy()
-
     def check_enemy(self):
         if self.spawn_time > 0:
             self.spawn_time -= 1
