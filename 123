@@ -9,19 +9,21 @@ class Graph{
 public:
     int x_sedk;
     int x_multk;
-    int x_k;
-    Graph(int x_sedk, int x_multk, int x_k){
+    int k = 400;
+    int integer;
+    Graph(int x_sedk, int x_multk, int integer){
         this-> x_sedk = x_sedk;
         this-> x_multk = x_multk;
-        this-> x_k = x_k;
+        this->integer = integer;
     }
     void draw(){
         txSetFillColor(TX_BLACK);
         txSetColor(TX_BLACK, 5);
-        for(int i = -500; i < 500; i+= 5){
+        for(int i = -k; i < k; i+= 5){
             //txCircle(i + 500 , (500-pow(i, k)), 5);
-            txLine(i + 500 , 500- (x_multk*(pow(i, x_sedk))+ (x_k*5)), (i+5) + 500 , 500-(x_multk*(pow(i+5, x_sedk))+(x_k*5)));
+            txLine(i + k , k- x_multk*pow(i, x_sedk) + (integer*5), (i+5) + k , k-x_multk*pow(i+5, x_sedk) + (integer*5));
         }
+        cout << integer << " ";
         //cout << x_k << " ";
     }
 };
@@ -30,33 +32,26 @@ public:
     string graph_formula;
     int x_sedk;
     int x_multk;
-    int x_k;
+    int integer;
     //y = 2x^2-10
     void read(){
         cin >> graph_formula;
-        int x_multk_index = graph_formula.find("x")-1;
-        int x_sedk_index = graph_formula.find("x")+2;
-        int sign = graph_formula.find("x")+3;
-        cout << sign << " ";
-        if (graph_formula[sign] == '+'){
-            int k = graph_formula.find("x")+4;
-            cout << k << " ";
-            stringstream n3;
-            n3 << graph_formula[k,graph_formula.size()];
-            n3 >> x_k;
+        stringstream n3;
+        if(graph_formula.find("+") != std::string::npos){
+                cout << graph_formula;
+            n3 << graph_formula[graph_formula.find("+")+1];
+            n3 >> integer;
         }
-        if (graph_formula[sign] == '-'){
-            int k = graph_formula.find("x")+4;
-            cout << k << " ";
-            stringstream n3;
-            n3 << graph_formula[k,graph_formula.size()];
-            n3 >> x_k;
-            x_k = -x_k;
+        else{
+
+            n3 << graph_formula[graph_formula.find("-")+1];
+            n3 >> integer;
+            integer = -integer;
         }
         stringstream n1;
         stringstream n2;
-        n1 <<  graph_formula[x_multk_index];
-        n2 <<  graph_formula[x_sedk_index];
+        n1 <<  graph_formula[graph_formula.find("x")-1];
+        n2 <<  graph_formula[graph_formula.find("x")+2];
         n1 >> x_multk;
         n2 >> x_sedk;
     }
@@ -95,14 +90,23 @@ public:
     void run(){
         txCreateWindow(winX, winY);
         read_str.read();
-        Graph graph = Graph(read_str.x_sedk, read_str.x_multk, read_str.x_k);
+        Graph graph = Graph(read_str.x_sedk, read_str.x_multk, read_str.integer);
+        while(true){
             txClear();
+            if(GetAsyncKeyState('A')){
+                graph.k -= 1;
+            }
+            if(GetAsyncKeyState('D')){
+                graph.k += 1;
+            }
             bg.draw();
             graph.draw();
             txSleep(1);
+        }
     }
 };
 int main(){
     Window window;
     window.run();
 }
+
